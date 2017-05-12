@@ -2,8 +2,8 @@ package routes
 
 import (
 	"fmt"
-	logger "github.com/salemark/httpLogger"
 	"net/http"
+	logger "salemark/httpLogger"
 )
 
 func rootHandler(res http.ResponseWriter, req *http.Request) {

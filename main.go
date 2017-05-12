@@ -1,9 +1,9 @@
 package main
 
 import (
-	middleware "github.com/salemark/middleware"
 	"log"
 	"net/http"
+	middleware "salemark/middleware"
 )
 
 func main() {
