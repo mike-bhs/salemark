@@ -10,6 +10,9 @@ type Route struct {
 	Handler func(http.ResponseWriter, *http.Request)
 }
 
+// base handler wich takes req and and root handler
+// it will also parse dictionary params
+
 func List() []Route {
 	routesList := []Route{
 		Route{Method: "GET", Path: "/", Handler: rootHandler},

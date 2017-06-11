@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"fmt"
+	logger "github.com/salemark/httpLogger"
+	routes "github.com/salemark/routes"
 	"net/http"
-	logger "salemark/httpLogger"
-	routes "salemark/routes"
 )
 
 func ProcessRequest(res http.ResponseWriter, req *http.Request, routesList []routes.Route) {
