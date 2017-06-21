@@ -2,14 +2,14 @@ package middleware
 
 import (
 	"fmt"
-	logger "github.com/salemark/httpLogger"
 	routes "github.com/salemark/routes"
 	search "github.com/salemark/search"
+	u "github.com/salemark/utils"
 	"net/http"
 )
 
 func ProcessRequest(res http.ResponseWriter, req *http.Request, routesList []routes.Route, s search.Search) {
-	logger.LogRequest(req)
+	u.LogRequest(req)
 
 	for _, route := range routesList {
 		if req.Method == route.Method && req.URL.Path == route.Path {
@@ -30,7 +30,7 @@ func DefaultResponse(w http.ResponseWriter, code int) {
 	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
-	logger.LogResponse(code)
+	u.LogResponse(code)
 	fmt.Fprintln(w, http.StatusText(code))
 }
 

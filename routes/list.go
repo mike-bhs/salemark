@@ -16,7 +16,7 @@ type Route struct {
 func List() []Route {
 	routesList := []Route{
 		Route{Method: "GET", Path: "/", Handler: rootHandler},
-		Route{Method: "GET", Path: "/search", Handler: rootHandler},
+		Route{Method: "POST", Path: "/search", Handler: rootHandler},
 	}
 
 	return routesList
