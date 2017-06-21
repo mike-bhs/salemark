@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	u "github.com/salemark/utils"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,8 +11,7 @@ import (
 func LogRequest(req *http.Request) {
 	err := req.ParseForm()
 
-	if err != nil {
-		log.Panicln(err)
+	if u.HandleError(err) {
 		return
 	}
 
