@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"reflect"
+	"sync"
 
 	"encoding/json"
 	"golang.org/x/net/context"
@@ -22,20 +23,36 @@ type Search struct {
 	Context context.Context
 }
 
-func Start() Search {
+var (
+	searchSingelton *Search
+	once            sync.Once
+)
+
+func initSearch() Search {
 	context := context.Background()
 	client, err := elastic.NewClient(elastic.SetURL(elasticHost))
 
 	u.PanicError(err)
 
-	s := Search{Client: client, Context: context}
+	return Search{Client: client, Context: context}
+}
+
+func Instance() *Search {
+	once.Do(func() {
+		s := initSearch()
+		searchSingelton = &s
+	})
+
+	return searchSingelton
+}
+
+func Start() {
+	s := *Instance()
 	GetInfo(s)
 
 	CreateIndex(s)
 	// SingleSeed(s)
 	// SeedData(s)
-
-	return s
 }
 
 func GetInfo(s Search) {
@@ -99,7 +116,7 @@ func SeedData(s Search) {
 		_, err := s.Client.Index().
 			Index(indexName).
 			Type(brand.Type()).
-			Id(brand.Id()).
+			Id(brand.Id()). // use name as Id
 			BodyJson(brand).
 			Do(s.Context)
 
@@ -112,18 +129,20 @@ func SeedData(s Search) {
 	u.PanicError(err)
 }
 
-func Find(s Search, sType, body string) string {
+func Find(sType, body string) string {
+	s := *Instance()
 	matchQuery := elastic.NewMatchPhraseQuery("name", body)
 
-	log.Println("Find Operation Beginns")
+	log.Println("Find Operation Begins")
 	searchResult, err := s.Client.Search().
-		Index(indexName). // search in index "twitter"
+		Index(indexName).
 		Type(sType).
 		Query(matchQuery). // specify the query
 		// From(0).Size(10). // take documents 0-9
 		Pretty(true). // pretty print request and response JSON
 		Do(s.Context) // execute
-	u.PanicError(err)
+
+	u.PanicError(err) // log error and return response
 
 	if searchResult.Hits.TotalHits < 1 {
 		message := "Nothing found"

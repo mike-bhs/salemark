@@ -6,15 +6,17 @@ import (
 	"net/http"
 )
 
-func SearchHandler(res http.ResponseWriter, req *http.Request, s search.Search) {
+// url to find phones must look like
+// /search/products?color=black&brand=apple&type=phone
+func SearchHandler(res http.ResponseWriter, req *http.Request) {
 	sType := u.GetParamValue(req, "type")
 	body := u.GetParamValue(req, "body")
 
 	if sType == "" || body == "" {
-		u.JsonResponse(res, 400, "Bad Data")
+		u.JsonResponse(res, 200, "Nothing found")
 		return
 	}
 
-	result := search.Find(s, sType, body)
+	result := search.Find(sType, body)
 	u.JsonResponse(res, 200, result)
 }

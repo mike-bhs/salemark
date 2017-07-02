@@ -9,9 +9,9 @@ import (
 
 func main() {
 	log.Println("Starting elasticsearch ...")
-	s := search.Start()
+	search.Start()
 
-	middleware.HandleRequests(s)
+	middleware.HandleRequests()
 
 	log.Println("Server is running at http://localhost:8080")
 	log.Fatalln(http.ListenAndServe(":8080", nil))
