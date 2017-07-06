@@ -116,7 +116,7 @@ func SeedData(s Search) {
 		_, err := s.Client.Index().
 			Index(indexName).
 			Type(brand.Type()).
-			Id(brand.Id()). // use name as Id
+			Id(brand.Name).
 			BodyJson(brand).
 			Do(s.Context)
 
@@ -131,16 +131,15 @@ func SeedData(s Search) {
 
 func Find(sType, body string) string {
 	s := *Instance()
-	matchQuery := elastic.NewMatchPhraseQuery("name", body)
+	matchQuery := elastic.NewMatchPhrasePrefixQuery("name", body)
 
 	log.Println("Find Operation Begins")
 	searchResult, err := s.Client.Search().
 		Index(indexName).
 		Type(sType).
-		Query(matchQuery). // specify the query
-		// From(0).Size(10). // take documents 0-9
-		Pretty(true). // pretty print request and response JSON
-		Do(s.Context) // execute
+		Query(matchQuery).
+		Pretty(true).
+		Do(s.Context)
 
 	u.PanicError(err) // log error and return response
 

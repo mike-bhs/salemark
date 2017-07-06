@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
@@ -14,15 +15,14 @@ func LogRequest(req *http.Request) {
 		return
 	}
 
-	var reqParams []string
+	jsonParams, err := json.Marshal(RequestParams(req))
 
-	for key, values := range req.Form {
-		v := strings.Join(values[:], ", ")
-		reqParams = append(reqParams, "\""+key+"\": \""+v+"\"")
+	if HandleError(err) {
+		return
 	}
 
 	log.Println(req.Method + " " + req.URL.String())
-	log.Println("    Parameters: {" + strings.Join(reqParams[:], ", ") + "}")
+	log.Println("    Parameters: {" + string(jsonParams[:]) + "}")
 }
 
 func LogResponse(code int) {
