@@ -1,11 +1,10 @@
 package routes
 
 import (
-	u "github.com/salemark/utils"
-	"net/http"
+	s "github.com/salemark/services"
 )
 
-func rootHandler(res http.ResponseWriter, req *http.Request) {
+func rootHandler(res s.Response, req s.Request) {
 	body := "<h1>Welcome!</h1>"
-	u.HtmlResponse(res, 200, body)
+	res.HtmlResponse(200, body)
 }

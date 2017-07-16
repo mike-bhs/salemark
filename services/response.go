@@ -2,9 +2,9 @@ package services
 
 import (
 	"fmt"
+	"log"
 	"net/http"
-
-	utils "github.com/salemark/utils"
+	"strconv"
 )
 
 type Response struct {
@@ -15,7 +15,7 @@ func (res Response) WriteResponse(statusCode int, contentType, body string) {
 	res.Source.WriteHeader(statusCode)
 	res.Source.Header().Set("Content-Type", contentType)
 
-	utils.LogResponse(statusCode)
+	log.Println("    Response: " + strconv.Itoa(statusCode) + " " + http.StatusText(statusCode))
 	fmt.Fprintln(res.Source, body)
 }
 

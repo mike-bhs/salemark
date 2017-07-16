@@ -1,26 +1,31 @@
 package services
 
 import (
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
-
-	routes "github.com/salemark/routes"
-	utils "github.com/salemark/utils"
 )
 
 type Request struct {
 	Source *http.Request
 }
 
-func (req Request) MatchRoute(route routes.Route) bool {
+type Route struct {
+	Method  string
+	Path    string
+	Handler func(Response, Request)
+}
+
+func (req Request) MatchRoute(route Route) bool {
 	return req.Method() == route.Method && req.Path() == route.Path
 }
 
 func (req Request) MatchPatter(pattern string) bool {
 	matched, err := regexp.Match(pattern, []byte(req.Path()))
 
-	if utils.HandleError(err) {
+	if err != nil {
+		log.Println(err)
 		return false
 	}
 
@@ -70,7 +75,8 @@ func (req Request) SimpleParams() (map[string]string, error) {
 func (req Request) ParseForm() error {
 	err := req.Source.ParseForm()
 
-	if utils.HandleError(err) {
+	if err != nil {
+		log.Println(err)
 		return err
 	}
 

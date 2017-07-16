@@ -12,17 +12,17 @@ const (
 	notFound = 404
 )
 
-func ProcessRequest(res s.Response, req s.Request, routesList []routes.Route) {
+func ProcessRequest(res s.Response, req s.Request, routesList []s.Route) {
 	u.LogRequest(req)
 
 	for _, route := range routesList {
 		if req.MatchPatter("/search.*") && req.Method() == "GET" {
-			routes.SearchHandler(res.Source, req.Source)
+			// routes.SearchHandler(res.Source, req.Source) TODO check it later
 			return
 		}
 
 		if req.MatchRoute(route) {
-			route.Handler(res.Source, req.Source)
+			route.Handler(res, req)
 			return
 		}
 	}
@@ -33,7 +33,7 @@ func ProcessRequest(res s.Response, req s.Request, routesList []routes.Route) {
 func HandleRequests() {
 	handlerWrapper := func(w http.ResponseWriter, r *http.Request) {
 		req := s.Request{Source: r}
-		res := s.ResponseWriter{Source: w}
+		res := s.Response{Source: w}
 
 		ProcessRequest(res, req, routes.List())
 	}
