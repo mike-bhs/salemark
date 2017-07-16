@@ -1,52 +1,42 @@
 package middleware
 
 import (
-	routes "github.com/salemark/routes"
-	u "github.com/salemark/utils"
 	"net/http"
-	"regexp"
+
+	routes "github.com/salemark/routes"
+	s "github.com/salemark/services"
+	u "github.com/salemark/utils"
 )
 
-func ProcessRequest(res http.ResponseWriter, req *http.Request, routesList []routes.Route) {
+const (
+	notFound = 404
+)
+
+func ProcessRequest(res s.Response, req s.Request, routesList []routes.Route) {
 	u.LogRequest(req)
 
 	for _, route := range routesList {
-		if isSearch(req) {
-			routes.SearchHandler(res, req)
+		if req.MatchPatter("/search.*") && req.Method() == "GET" {
+			routes.SearchHandler(res.Source, req.Source)
 			return
 		}
 
-		if req.Method == route.Method && req.URL.Path == route.Path {
-			route.Handler(res, req)
+		if req.MatchRoute(route) {
+			route.Handler(res.Source, req.Source)
 			return
 		}
 	}
 
-	code := 404
-	u.JsonResponse(res, code, http.StatusText(code))
+	res.JsonResponse(notFound, http.StatusText(notFound))
 }
 
 func HandleRequests() {
 	handlerWrapper := func(w http.ResponseWriter, r *http.Request) {
-		ProcessRequest(w, r, routes.List())
+		req := s.Request{Source: r}
+		res := s.ResponseWriter{Source: w}
+
+		ProcessRequest(res, req, routes.List())
 	}
 
 	http.HandleFunc("/", handlerWrapper)
-}
-
-func isSearch(req *http.Request) bool {
-	pattern := "/search.*"
-
-	matched, err := regexp.Match(pattern, []byte(req.URL.Path))
-	hasErr := u.HandleError(err)
-
-	if req.Method != "GET" || hasErr {
-		return false
-	}
-
-	if matched {
-		return true
-	}
-
-	return false
 }

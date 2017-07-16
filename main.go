@@ -1,15 +1,14 @@
 package main
 
 import (
-	middleware "github.com/salemark/middleware"
-	// search "github.com/salemark/search"
 	"log"
 	"net/http"
+
+	middleware "github.com/salemark/middleware"
 )
 
 func main() {
 	log.Println("Starting elasticsearch ...")
-	// search.Start()
 
 	middleware.HandleRequests()
 
