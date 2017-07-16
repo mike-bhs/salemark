@@ -1,15 +1,10 @@
 package routes
 
 import (
-	"fmt"
-	logger "github.com/salemark/httpLogger"
-	"net/http"
+	s "github.com/salemark/services"
 )
 
-func rootHandler(res http.ResponseWriter, req *http.Request) {
-	// reusable response writer
-	res.WriteHeader(200)
-	res.Header().Set("Content-Type", "text/html; charset=utf-8")
-	logger.LogResponse(200)
-	fmt.Fprintln(res, "<h1>Welcome!</h1>")
+func rootHandler(res s.Response, req s.Request) {
+	body := "<h1>Welcome!</h1>"
+	res.HtmlResponse(200, body)
 }
