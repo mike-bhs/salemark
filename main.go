@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	middleware "github.com/salemark/middleware"
+	s "github.com/salemark/services"
 )
 
 func main() {
@@ -13,5 +14,6 @@ func main() {
 	middleware.HandleRequests()
 
 	log.Println("Server is running at http://localhost:8080")
+	s.StartParsing()
 	log.Fatalln(http.ListenAndServe(":8080", nil))
 }
