@@ -16,7 +16,7 @@ func ProcessRequest(res s.Response, req s.Request, routesList []s.Route) {
 	u.LogRequest(req)
 
 	for _, route := range routesList {
-		if req.MatchPatter("/search.*") && req.Method() == "GET" {
+		if req.MatchPattern("/search.*") && req.Method() == "GET" {
 			// routes.SearchHandler(res.Source, req.Source) TODO check it later
 			return
 		}

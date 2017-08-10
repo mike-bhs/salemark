@@ -31,6 +31,7 @@ func StartParsing() {
 func parseSchemaObjects(root *html.Node) {
 	schemaMap := make(map[string]string)
 	schemaNodes := scrape.FindAllNested(root, SchemaObjectMatcher)
+
 	for _, sn := range schemaNodes {
 		prop := scrape.Attr(sn, "itemprop")
 		_, present := schemaMap[prop]
@@ -66,11 +67,7 @@ func parseCustomObjects(root *html.Node) {
 }
 
 func SchemaObjectMatcher(n *html.Node) bool {
-	if scrape.Attr(n, "itemprop") != "" {
-		return true
-	}
-
-	return false
+	return scrape.Attr(n, "itemprop") != ""
 }
 
 func LabelsMatcher(n *html.Node) bool {

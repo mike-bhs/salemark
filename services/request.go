@@ -21,7 +21,7 @@ func (req Request) MatchRoute(route Route) bool {
 	return req.Method() == route.Method && req.Path() == route.Path
 }
 
-func (req Request) MatchPatter(pattern string) bool {
+func (req Request) MatchPattern(pattern string) bool {
 	matched, err := regexp.Match(pattern, []byte(req.Path()))
 
 	if err != nil {
